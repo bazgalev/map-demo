@@ -28,7 +28,7 @@
             border-radius: 50%;
             cursor: pointer;
             background: rgb(55, 174, 78);
-            animation: pulsered 3s infinite linear;
+            animation: pulsered 4s infinite linear;
             overflow: visible;
         }
 
@@ -63,13 +63,13 @@
 
         .marker::before {
             animation-name: pulsered;
-            animation-duration: 3s;
+            animation-duration: 4s;
             animation-delay: -1s;
         }
 
         .marker::after {
             animation-name: pulsered;
-            animation-duration: 3s;
+            animation-duration: 4s;
             animation-delay: -2s;
         }
 
@@ -132,8 +132,8 @@
             const map = new maplibregl.Map({
                 container: 'map',
                 style: 'https://api.maptiler.com/maps/toner-v2/style.json?key=UaHJ8Z8X902if9FGveke',
-                center: [57.7887, 55.8104],
-                zoom: 4
+                center: [52.7887, 55.8104],
+                zoom: 4.5
             });
 
             function addSalePoint(station) {
@@ -156,10 +156,13 @@
             }
 
             function startTestDataGenerator() {
+                const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
+                addSalePoint(station);
+
                 setInterval(() => {
                     const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
                     addSalePoint(station);
-                }, getRandomInt(9000 - getRandomInt(4)));
+                }, getRandomInt(8) * 1000);
             }
 
             map.on('load', startTestDataGenerator);
