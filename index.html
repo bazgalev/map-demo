@@ -24,7 +24,7 @@
         .sale-point {
             width: 20px;
             height: 20px;
-            background-color: #4CAF50;
+            background-color: #f68e18;
             border-radius: 50%;
             /*animation: pulse 3s ease-out forwards;*/
             opacity: 0;
@@ -88,26 +88,7 @@
         try {
             const map = new maplibregl.Map({
                 container: 'map',
-                style: {
-                    version: 8,
-                    sources: {
-                        'raster-tiles': {
-                            type: 'raster',
-                            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                            tileSize: 256,
-                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        }
-                    },
-                    layers: [
-                        {
-                            id: 'simple-tiles',
-                            type: 'raster',
-                            source: 'raster-tiles',
-                            minzoom: 0,
-                            maxzoom: 19
-                        }
-                    ]
-                },
+                style: 'https://api.maptiler.com/maps/toner-v2/style.json?key=UaHJ8Z8X902if9FGveke',
                 center: [97.7887, 60.8104],
                 zoom: 3
             });
