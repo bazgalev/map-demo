@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Sales Map</title>
+    <title>Real-Time Sales Map with Smooth Fade</title>
     <link href="https://unpkg.com/maplibre-gl@^5.0.1/dist/maplibre-gl.css" rel="stylesheet" />
     <style>
         body { margin: 0; padding: 0; }
@@ -27,8 +27,7 @@
             height: 14px;
             border-radius: 50%;
             cursor: pointer;
-            background: rgb(213, 58, 8);
-            box-shadow: 0 0 0 rgba(213, 58, 8, 0.99);
+            background: rgb(55, 174, 78);
             animation: pulsered 3s infinite linear;
         }
 
@@ -59,13 +58,16 @@
 
         @keyframes pulsered {
             0% {
-                box-shadow: 0 0 0 0 rgba(213, 58, 8, 0.99);
+                box-shadow: 0 0 0 0 rgba(50, 189, 76, 1);
+                background: rgba(55, 174, 78, 1);
             }
             50% {
-                box-shadow: 0 0 0 10px rgba(213, 58, 8, 0);
+                box-shadow: 0 0 0 15px rgba(213, 58, 8, 0);
+                background: rgba(213, 58, 8, 0);
             }
             100% {
                 box-shadow: 0 0 0 0 rgba(213, 58, 8, 0);
+                background: rgba(213, 58, 8, 0);
             }
         }
     </style>
@@ -113,8 +115,8 @@
             const map = new maplibregl.Map({
                 container: 'map',
                 style: 'https://api.maptiler.com/maps/toner-v2/style.json?key=UaHJ8Z8X902if9FGveke',
-                center: [97.7887, 60.8104],
-                zoom: 3
+                center: [57.7887, 55.8104],
+                zoom: 4
             });
 
             function addSalePoint(coordinates) {
@@ -129,14 +131,14 @@
 
                 setTimeout(() => {
                     marker.remove();
-                }, 10000);
+                }, 7000);
             }
 
             function startTestDataGenerator() {
                 setInterval(() => {
                     const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
                     addSalePoint(station.coordinates);
-                }, 3000);
+                }, getRandomInt(9000 - getRandomInt(4)));
             }
 
             map.on('load', startTestDataGenerator);
@@ -151,6 +153,10 @@
             document.getElementById('error').style.display = 'block';
         }
     });
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
 </script>
 </body>
 </html>
