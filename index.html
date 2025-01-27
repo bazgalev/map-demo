@@ -28,7 +28,7 @@
             border-radius: 50%;
             cursor: pointer;
             background: rgb(55, 174, 78);
-            animation: pulsered 4s infinite linear;
+            animation: pulsered 7s 1 linear;
             overflow: visible;
         }
 
@@ -56,20 +56,20 @@
             top: 0;
             left: 0;
             border-radius: 50%;
-            animation-iteration-count: infinite;
+            animation-iteration-count: 1;
             animation-timing-function: linear;
             cursor: pointer;
         }
 
         .marker::before {
             animation-name: pulsered;
-            animation-duration: 4s;
+            animation-duration: 7s;
             animation-delay: -1s;
         }
 
         .marker::after {
             animation-name: pulsered;
-            animation-duration: 4s;
+            animation-duration: 7s;
             animation-delay: -2s;
         }
 
@@ -156,13 +156,21 @@
             }
 
             function startTestDataGenerator() {
-                const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
-                addSalePoint(station);
-
-                setInterval(() => {
+                function generateRandomStation() {
                     const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
                     addSalePoint(station);
-                }, getRandomInt(8) * 1000);
+
+                    // Генерируем случайное время задержки от 2 до 8 секунд
+                    const randomDelay = (Math.floor(Math.random() * 7) + 2) * 1000;
+
+                    // Устанавливаем таймаут, чтобы вызвать функцию заново
+                    setTimeout(generateRandomStation, randomDelay);
+                }
+
+                // Запускаем несколько процессов генерации событий
+                for (let i = 0; i < 5; i++) {
+                    generateRandomStation();
+                }
             }
 
             map.on('load', startTestDataGenerator);
@@ -179,7 +187,9 @@
     });
 
     function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
+        res = Math.floor(Math.random() * max);
+        console.log(res);
+        return res;
     }
 </script>
 </body>
