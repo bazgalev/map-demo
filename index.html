@@ -157,80 +157,56 @@
         const ALL_STATIONS = [...BUS_STATIONS, ...ROUTE_STATIONS];
 
         try {
-            fetch('https://api.maptiler.com/maps/toner-v2/style.json?key=UaHJ8Z8X902if9FGveke')
-                .then(response => response.json())
-                .then(style => {
-                    // Найдем слой, который отвечает за отображение городов
-                    const cityLabelsLayer = style.layers.find(layer => layer.id === 'City labels');
 
-                    if (cityLabelsLayer) {
-                        // Установим minzoom на 2 (или другое подходящее значение)
-                        cityLabelsLayer.minzoom = 2;
-                    }
+            // Создаем карту с измененным стилем
+            const map = new maplibregl.Map({
+                container: 'map',
+                style: "./style.json", // Используем изменённый стиль
+                center: [52.7887, 55.8104],
+                zoom: 4.5
+            });
 
-                    style.layers.forEach(layer => {
-                        if (layer.layout && layer.layout['text-field']) {
-                            // Добавляем поле для русского названия
-                            layer.layout['text-field'] = ['coalesce',
-                                ['get', 'name:ru'], // сначала пробуем получить русское название
-                                ['get', 'name']     // если русского нет, берем значение по умолчанию
-                            ];
-                        }
-                    });
+            function addSalePoint(station) {
+                const el = document.createElement('div');
+                el.className = 'marker';
 
-                    // Создаем карту с измененным стилем
-                    const map = new maplibregl.Map({
-                        container: 'map',
-                        style: style, // Используем изменённый стиль
-                        center: [52.7887, 55.8104],
-                        zoom: 4.5
-                    });
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = station.name;
 
-                    function addSalePoint(station) {
-                        const el = document.createElement('div');
-                        el.className = 'marker';
+                el.appendChild(tooltip);
 
-                        const tooltip = document.createElement('div');
-                        tooltip.className = 'tooltip';
-                        tooltip.textContent = station.name;
+                const marker = new maplibregl.Marker({ element: el })
+                    .setLngLat(station.coordinates)
+                    .addTo(map);
 
-                        el.appendChild(tooltip);
+                setTimeout(() => {
+                    marker.remove();
+                }, 7000);
+            }
 
-                        const marker = new maplibregl.Marker({ element: el })
-                            .setLngLat(station.coordinates)
-                            .addTo(map);
+            function startTestDataGenerator() {
+                function generateRandomStation() {
+                    const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
+                    addSalePoint(station);
 
-                        setTimeout(() => {
-                            marker.remove();
-                        }, 7000);
-                    }
+                    // Генерируем случайное время задержки от 2 до 8 секунд
+                    const randomDelay = (Math.floor(Math.random() * 7) + 2) * 1000;
 
-                    function startTestDataGenerator() {
-                        function generateRandomStation() {
-                            const station = ALL_STATIONS[Math.floor(Math.random() * ALL_STATIONS.length)];
-                            addSalePoint(station);
+                    // Устанавливаем таймаут, чтобы вызвать функцию заново
+                    setTimeout(generateRandomStation, randomDelay);
+                }
 
-                            // Генерируем случайное время задержки от 2 до 8 секунд
-                            const randomDelay = (Math.floor(Math.random() * 7) + 2) * 1000;
-
-                            // Устанавливаем таймаут, чтобы вызвать функцию заново
-                            setTimeout(generateRandomStation, randomDelay);
-                        }
-
-                        // Запускаем несколько процессов генерации событий
-                        for (let i = 0; i < 5; i++) {
-                            generateRandomStation();
-                        }
-                    }
-                    map.on('load', startTestDataGenerator);
-                    map.on('error', (e) => {
-                        console.error('Ошибка карты:', e);
-                        document.getElementById('error').style.display = 'block';
-                    });
-                })
-                .catch(error => {
-                    console.error('Ошибка загрузки стиля карты:', error);
-                });
+                // Запускаем несколько процессов генерации событий
+                for (let i = 0; i < 5; i++) {
+                    generateRandomStation();
+                }
+            }
+            map.on('load', startTestDataGenerator);
+            map.on('error', (e) => {
+                console.error('Ошибка карты:', e);
+                document.getElementById('error').style.display = 'block';
+            });
         } catch (error) {
             console.error('Ошибка инициализации карты:', error);
             document.getElementById('error').style.display = 'block';
