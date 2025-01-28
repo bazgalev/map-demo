@@ -201,6 +201,25 @@
                 }
             }
 
+            map.on('load', () => {
+                // Получаем текущий стиль
+                const style = map.getStyle();
+
+                // Изменяем настройки для всех текстовых слоев
+                style.layers.forEach(layer => {
+                    if (layer.layout && layer.layout['text-field']) {
+                        // Добавляем поле для русского названия
+                        layer.layout['text-field'] = ['coalesce',
+                            ['get', 'name:ru'], // сначала пробуем получить русское название
+                            ['get', 'name']     // если русского нет, берем значение по умолчанию
+                        ];
+                    }
+                });
+
+
+                // Применяем обновленный стиль
+                map.setStyle(style);
+            });
             map.on('load', startTestDataGenerator);
 
             map.on('error', (e) => {
